@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Royal Tailor — Your neighbourhood tailor's radio, still open. Nostalgic Bollywood music from 1967.">
+  <meta name="theme-color" content="#1a0a00">
+  <title>Royal Tailor — Since 1967 | Nostalgic Tailor Shop Radio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rozha+One&family=Special+Elite&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=2000">
+</head>
+<body>
+
+  <!-- Hidden YouTube bridge — must be visible enough for YT to run -->
+  <div style="position:fixed;bottom:0;right:0;width:200px;height:200px;opacity:0.01;pointer-events:none;z-index:-10;overflow:hidden;">
+    <div id="youtubeBridge"></div>
+  </div>
+
+  <!-- Rain canvas -->
+  <canvas id="rainCanvas"></canvas>
+  <div id="lightningFlash"></div>
+
+  <!-- Film grain overlay -->
+  <div class="grain-overlay"></div>
+
+  <!-- ===================== LANDING SCREEN ===================== -->
+  <div id="landingScreen" class="landing-screen">
+    <div class="landing-bg"></div>
+    <div class="landing-vignette"></div>
+    <div class="landing-content">
+      <div class="shop-sign">
+        <div class="sign-since">EST. 1967</div>
+        <h1 class="sign-title">ROYAL TAILOR</h1>
+        <div class="sign-subtitle">SUITS &middot; SHERWANI &middot; KURTA &middot; PAJAMA</div>
+      </div>
+      <p class="landing-tagline">Your neighbourhood tailor,&nbsp;<em>still open.</em></p>
+      <button id="enterShopBtn" class="enter-btn" aria-label="Enter the shop and start music">
+        <span class="enter-btn-icon">&#9654;</span>
+        <span class="enter-btn-text">ENTER SHOP</span>
+      </button>
+      <div class="landing-hint">Click to start music &amp; ambience</div>
+    </div>
+  </div>
+
+  <!-- ===================== SHOP SCREEN ===================== -->
+  <div id="shopScreen" class="shop-screen hidden">
+    <div class="shop-bg" id="shopBg">
+      <div class="shop-bg-layer" id="bgLayer0"></div>
+      <div class="shop-bg-layer" id="bgLayer1" style="opacity:0;"></div>
+    </div>
+    <div class="shop-vignette"></div>
+
+    <!-- Top controls -->
+    <header class="top-controls">
+      <div class="top-left">
+        <div class="live-pill">
+          <span class="live-dot"></span>
+          <span>LIVE</span>
+        </div>
+      </div>
+      <div class="top-right">
+        <button class="pill-btn" id="rainBtn" aria-pressed="false" title="Toggle Baarish">
+          <span>🌧️</span>
+          <span class="pill-label">Baarish?</span>
+          <span class="pill-badge" id="rainBadge">OFF</span>
+        </button>
+        <button class="pill-btn active" id="ambBtn" aria-pressed="true" title="Toggle Shop Sounds">
+          <span>🧵</span>
+          <span class="pill-label">Shop Sounds</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Center quote -->
+    <main class="shop-center">
+      <div class="quote-wrap" aria-live="polite">
+        <p class="shop-quote" id="shopQuote">&ldquo;Kapda seedha rakho, mauqa milega...&rdquo;</p>
+        <p class="shop-quote-author" id="shopQuoteAuthor">&mdash; Master ji</p>
+      </div>
+    </main>
+
+    <!-- Bottom player -->
+    <div class="bottom-dock">
+      <section class="player-bar" aria-label="Music player">
+
+        <!-- Spinning disc / album art -->
+        <button class="disc-wrap" id="discBtn" aria-label="Play or Pause">
+          <div class="disc" id="disc">
+            <div class="disc-inner" id="discArt"></div>
+            <div class="disc-hole"></div>
+          </div>
+        </button>
+
+        <!-- Track info + progress -->
+        <div class="track-info">
+          <div class="track-name" id="trackName">Nostalgia Loading...</div>
+          <div class="track-meta">
+            <span class="track-channel" id="trackChannel">Royal Tailor Radio</span>
+            <span class="track-sep">&middot;</span>
+            <span class="track-radio">📻 Purana Waqt</span>
+          </div>
+          <div class="progress-row">
+            <span class="time-label" id="timeNow">0:00</span>
+            <div class="progress-bar" id="progressBar" role="slider" aria-label="Track progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0">
+              <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <span class="time-label" id="timeTotal">0:00</span>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="player-controls">
+          <button class="ctrl-btn" id="prevBtn" aria-label="Previous track">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="m19 20-9-8 9-8v16Z"/><rect x="4" y="5" width="2" height="14" rx="1"/></svg>
+          </button>
+          <button class="ctrl-btn play-btn" id="playBtn" aria-label="Play music">
+            <svg id="playIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7-11-7Z"/></svg>
+          </button>
+          <button class="ctrl-btn" id="nextBtn" aria-label="Next track">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="m5 4 9 8-9 8V4Z"/><rect x="18" y="5" width="2" height="14" rx="1"/></svg>
+          </button>
+          <div class="vol-wrap">
+            <button class="ctrl-btn" id="volBtn" aria-label="Volume">
+              <svg id="volIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M18.5 5.5a9 9 0 0 1 0 13" stroke="currentColor" stroke-width="1.8" fill="none"/></svg>
+            </button>
+            <div class="vol-popover hidden" id="volPopover">
+              <input type="range" id="volSlider" min="0" max="100" value="80" aria-label="Volume" class="vol-slider">
+            </div>
+          </div>
+        </div>
+
+      </section>
+    </div>
+  </div>
+
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script src="app.js?v=2000"></script>
+</body>
+</html>
