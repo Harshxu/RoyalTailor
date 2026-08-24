@@ -1,0 +1,809 @@
+# Build ROYAL TAILOR — Reverse-Engineer the Deluxe Saloon Experience, Then Build an Original Implementation
+
+You are a senior frontend engineer, audio/Web Audio engineer, UX engineer, and web reverse-engineering specialist.
+
+Build a production-ready website called **ROYAL TAILOR**.
+
+The creative direction is inspired by the experience of the official **https://deluxsalon.in/**, but ROYAL TAILOR must be an ORIGINAL implementation. Do not copy proprietary source code, artwork, text, recordings, or other protected assets from Deluxe Saloon. Recreate the observable interaction model, atmosphere, audio architecture, and technical behavior using original assets and legally usable music/audio.
+
+## 1. FIRST: RESEARCH BEFORE CODING
+
+Do NOT immediately start coding.
+
+First perform a technical investigation of:
+
+https://deluxsalon.in/
+
+Your objective is to determine as much as can legitimately be observed from the public website.
+
+Investigate:
+
+* HTML structure
+* CSS architecture
+* JavaScript bundles
+* network requests
+* iframe usage
+* YouTube integration
+* YouTube playlist/video IDs if publicly exposed
+* player initialization
+* player events
+* autoplay behavior
+* shuffle behavior
+* song-transition behavior
+* UI state changes
+* ambient-audio behavior
+* rain/ambience toggle behavior
+* volume behavior
+* mute behavior
+* page visibility/background-tab behavior
+* mobile behavior
+* responsive breakpoints
+* loading behavior
+* fonts
+* image formats
+* animation timing
+* audio timing
+* crossfades
+* overlays
+* z-index/layering
+* browser APIs
+* localStorage/sessionStorage/cookies
+* URL/query parameters
+* service workers
+* analytics
+* CDN resources
+* public configuration objects
+* publicly accessible playlist metadata
+
+Use browser developer tools or equivalent inspection capabilities whenever available.
+
+Do NOT attempt to bypass authentication, DRM, access controls, rate limits, private APIs, or other technical restrictions.
+
+If something cannot be determined, explicitly label it:
+
+UNKNOWN / NOT OBSERVABLE
+
+Do not invent an implementation and claim it is the original.
+
+---
+
+# 2. IMPORTANT FINDING ABOUT THE AUDIO SOURCE
+
+The official Deluxe Saloon page explicitly states:
+
+“Audio plays through YouTube’s embedded player. Nothing is hosted on this site.”
+
+Therefore, investigate the YouTube integration first.
+
+Determine:
+
+1. Is it a YouTube IFrame Player API player?
+2. Is a playlist ID used?
+3. Is a single video player used with manual queueing?
+4. Is shuffle delegated to YouTube?
+5. Is shuffle implemented by the site's JavaScript?
+6. Does the site receive `onStateChange` events?
+7. How does it determine when the current track ends?
+8. How does it select the next track?
+9. Does it maintain its own recently-played history?
+10. Does the browser actually contain a complete playlist/video list?
+11. Does the site dynamically request metadata?
+12. Is there any evidence of a custom queue?
+
+Do not assume that “shuffle” means simple:
+
+Math.random()
+
+Determine the observable behavior as accurately as possible.
+
+---
+
+# 3. RESEARCH THE “BEST SONG EVERY TIME” BEHAVIOR
+
+The goal is to understand why the experience feels curated rather than random.
+
+Investigate whether there is evidence of:
+
+* time-of-day selection
+* mood selection
+* genre grouping
+* playlist grouping
+* weighted randomness
+* recently-played avoidance
+* song-history memory
+* deterministic shuffle
+* session-specific shuffle
+* popularity weighting
+* manually curated ordering
+* YouTube playlist shuffle
+* separate playlists for different moods
+* different behavior on first load versus subsequent tracks
+
+Create a written technical hypothesis after research.
+
+Example:
+
+```text
+OBSERVED:
+The site uses YouTube.
+
+LIKELY:
+A curated playlist is shuffled.
+
+NOT VERIFIED:
+Whether shuffle is YouTube-native or custom.
+
+CONFIRMED:
+The page claims the playlist automatically plays in shuffle.
+```
+
+Never turn a hypothesis into a “fact.”
+
+---
+
+# 4. AUDIO / REVERB INVESTIGATION
+
+This is extremely important.
+
+I want ROYAL TAILOR to have the same *kind* of immersive acoustic feeling as Deluxe Saloon, but implemented independently.
+
+Investigate whether the apparent reverb is:
+
+A. already present in the source music,
+B. applied to ambient recordings,
+C. applied to music through Web Audio,
+D. produced by mixing multiple environmental recordings,
+E. produced by EQ/compression/saturation,
+F. produced by the room/visual illusion rather than actual DSP,
+G. or a combination.
+
+Look for evidence of:
+
+* AudioContext
+* GainNode
+* BiquadFilterNode
+* DynamicsCompressorNode
+* DelayNode
+* ConvolverNode
+* StereoPannerNode
+* AnalyserNode
+* MediaElementAudioSourceNode
+* AudioWorklet
+* impulse-response files
+* `.wav`
+* `.mp3`
+* `.ogg`
+* `.m4a`
+* Web Audio processing
+* CSS/visual synchronization
+
+If the music is inside a YouTube iframe, determine whether the parent page has any legitimate mechanism to process that audio.
+
+IMPORTANT:
+
+Do not claim that arbitrary Web Audio processing is being applied to YouTube iframe audio unless you can technically verify it.
+
+---
+
+# 5. RECREATE THE ACOUSTIC CHARACTER — DON'T COPY THEIR RECORDINGS
+
+For ROYAL TAILOR, create an original “old Indian tailoring shop” acoustic environment.
+
+The music should feel as though it is coming from an old radio/speaker inside a physical room.
+
+Design an original DSP chain approximately like:
+
+Music
+→ gain
+→ subtle EQ
+→ mild compression
+→ optional tape/saturation coloration
+→ short room reverb
+→ output
+
+Ambient layer:
+Room tone
+→ EQ
+→ subtle reverb
+→ stereo positioning
+→ output
+
+But do NOT blindly use these values.
+
+Tune the DSP by listening and measuring.
+
+Expose the parameters in a configuration file:
+
+```ts
+interface AudioProfile {
+  musicGain: number;
+  lowShelfDb: number;
+  midCutDb: number;
+  highShelfDb: number;
+  compressionThreshold: number;
+  compressionRatio: number;
+  attackMs: number;
+  releaseMs: number;
+  reverbWet: number;
+  reverbDry: number;
+  reverbPreDelayMs: number;
+  reverbDecaySeconds: number;
+  stereoWidth: number;
+  saturationAmount: number;
+}
+```
+
+Make the values adjustable without changing application logic.
+
+---
+
+# 6. ROYAL TAILOR'S ORIGINAL AUDIO WORLD
+
+Create an audio world appropriate to an old Indian tailoring shop.
+
+Potential original ambience layers:
+
+* sewing machine
+* scissors cutting cloth
+* measuring tape snapping
+* cloth movement
+* ceiling fan
+* distant traffic
+* occasional bicycle bell
+* street ambience
+* shop door movement
+* distant radio noise
+* occasional customer/shopkeeper chatter
+* subtle room tone
+
+Do NOT use copyrighted recordings copied from Deluxe Saloon.
+
+Use:
+
+* original recordings,
+* properly licensed recordings,
+* public-domain recordings,
+* or generated/original recordings.
+
+Each ambience layer should have:
+
+```ts
+interface AmbientLayer {
+  id: string;
+  src: string;
+  gain: number;
+  loop: boolean;
+  probability: number;
+  minDelayMs: number;
+  maxDelayMs: number;
+  pan: number;
+}
+```
+
+The ambience must never sound like a repetitive loop.
+
+---
+
+# 7. THE “ROOM” EFFECT
+
+The most important perceptual goal is:
+
+The user should feel like they are sitting INSIDE an old Indian tailoring shop.
+
+Use multiple acoustic cues:
+
+1. Music should sound slightly distant.
+2. Ambient room should feel wider than the music.
+3. High frequencies should be slightly softened on the “radio” source.
+4. Room reflections should be short and subtle.
+5. Occasional sounds should appear from different stereo positions.
+6. Environmental sounds should sometimes overlap music.
+7. Avoid excessive modern hi-fi clarity.
+8. Avoid giant cinematic reverb.
+9. Avoid obvious looping.
+
+Create two separate buses:
+
+```text
+MUSIC BUS
+    ↓
+Radio coloration
+    ↓
+Room/Reverb
+    ↓
+MASTER
+
+AMBIENCE BUS
+    ↓
+Room/Reverb
+    ↓
+MASTER
+```
+
+---
+
+# 8. MUSIC SYSTEM
+
+Do NOT download YouTube music.
+
+For the ROYAL TAILOR production version, use a legal source:
+
+* licensed music,
+* user-provided music,
+* public-domain music,
+* or another legally embeddable streaming source.
+
+If YouTube embedding is used, use the official YouTube embed/API mechanisms.
+
+Create an abstract provider:
+
+```ts
+interface MusicProvider {
+  play(): Promise<void>;
+  pause(): void;
+  next(): void;
+  previous(): void;
+  setVolume(volume: number): void;
+  getCurrentTrack(): Track | null;
+  onTrackEnded(callback: () => void): void;
+}
+```
+
+This allows YouTube or another legal provider to be swapped later.
+
+---
+
+# 9. SONG SELECTION ENGINE
+
+Build a real queue engine rather than blindly calling random().
+
+Each track should have metadata:
+
+```ts
+interface Track {
+  id: string;
+  title: string;
+  artist: string;
+  year?: number;
+  mood?: string[];
+  energy?: number;
+  nostalgia?: number;
+  popularity?: number;
+  timeTags?: string[];
+  category?: string;
+}
+```
+
+Then create:
+
+```ts
+selectNextTrack(context)
+```
+
+with:
+
+* recently played exclusion
+* weighted randomness
+* mood matching
+* time-of-day matching
+* energy matching
+* configurable repeat protection
+* session history
+* fallback behavior
+
+Example scoring model:
+
+```text
+score =
+  moodCompatibility
++ timeCompatibility
++ energyCompatibility
++ nostalgiaScore
++ popularityWeight
++ controlledRandomness
+- recentPlayPenalty
+- repeatPenalty
+```
+
+These weights must be configurable.
+
+Do not claim this is Deluxe Saloon's actual algorithm. It is ROYAL TAILOR's original implementation designed to reproduce the *perceptual result*.
+
+---
+
+# 10. TIME-OF-DAY RADIO
+
+Create different environments depending on local Indian time.
+
+Example:
+
+05:00–09:00
+EARLY MORNING
+
+09:00–13:00
+SHOP OPENING
+
+13:00–18:00
+AFTERNOON
+
+18:00–22:00
+EVENING BAZAAR
+
+22:00–05:00
+LATE NIGHT
+
+Each profile controls:
+
+* music pool
+* energy
+* ambience
+* volume
+* reverb character
+* chatter frequency
+* probability of special sound events
+
+Make this configuration-driven.
+
+---
+
+# 11. “OLD RADIO” PROCESSING
+
+The music should not simply sound like a modern Spotify stream.
+
+Experiment with:
+
+* gentle high-frequency rolloff
+* subtle midrange emphasis
+* slight mono/narrow stereo image
+* tiny saturation
+* gentle compression
+* short room reverb
+* subtle noise floor
+
+Provide an A/B debug mode:
+
+```text
+[ ORIGINAL ]
+[ RADIO ]
+[ RADIO + ROOM ]
+```
+
+This will make it easy to tune the effect.
+
+---
+
+# 12. CHATTER SYSTEM
+
+Create an independent chatter engine.
+
+Example:
+
+```ts
+interface ChatterEvent {
+  id: string;
+  audio: string;
+  probability: number;
+  cooldownMs: number;
+  allowedProfiles: string[];
+}
+```
+
+Do not play chatter at fixed intervals.
+
+Instead:
+
+```text
+randomized cooldown
++
+probability
++
+current music energy
++
+current ambience
+```
+
+This should make the shop feel alive.
+
+---
+
+# 13. RAIN MODE
+
+The Deluxe site visibly exposes a “Baarish?” ambience control.
+
+ROYAL TAILOR should have an original equivalent:
+
+RAIN MODE
+
+When enabled:
+
+* rain ambience fades in
+* room ambience changes
+* occasional distant thunder can occur
+* music remains continuous
+* the rain must not abruptly start/stop
+* use 2–4 overlapping layers rather than one obvious loop
+
+Use smooth fades:
+
+```text
+fadeIn: 2–5 seconds
+fadeOut: 2–5 seconds
+```
+
+Randomize rain layer timing.
+
+---
+
+# 14. PAGE DESIGN
+
+Do NOT copy Deluxe Saloon's exact artwork or layout.
+
+Instead create a visually equivalent *concept* for ROYAL TAILOR:
+
+A nostalgic Indian tailoring shop.
+
+Visual elements:
+
+* old shop sign
+* sewing machine
+* cloth rolls
+* measuring tape
+* scissors
+* wooden counter
+* faded wall paint
+* old calendar
+* handwritten price board
+* ceiling fan
+* CRT-era visual language
+* subtle grain
+* warm imperfect lighting
+
+The interface should feel like an actual shop rather than a SaaS dashboard.
+
+---
+
+# 15. UX
+
+The first screen should immediately communicate:
+
+ROYAL TAILOR
+
+“Your neighbourhood tailor, still open.”
+
+Primary control:
+
+▶ ENTER SHOP
+
+After interaction:
+
+* music begins
+* ambience begins
+* UI transitions into the shop
+* player remains unobtrusive
+
+Controls:
+
+* Play/Pause
+* Next
+* Volume
+* Rain
+* Shop ambience
+* optional “Radio” toggle
+* current song information
+
+Do not overload the UI.
+
+---
+
+# 16. MOBILE
+
+Mobile must be treated as a first-class experience.
+
+Test:
+
+* iPhone Safari
+* Android Chrome
+* desktop Chrome
+* desktop Firefox
+* desktop Safari
+
+Handle autoplay restrictions correctly.
+
+Never try to circumvent browser autoplay policies.
+
+If user interaction is required:
+
+```text
+ENTER SHOP
+```
+
+should initialize the audio experience.
+
+---
+
+# 17. PERFORMANCE
+
+The site should remain lightweight.
+
+Requirements:
+
+* lazy-load nonessential images
+* preload only critical audio
+* avoid huge JS bundles
+* optimize images
+* avoid unnecessary Web Audio nodes
+* pause expensive animation when tab is hidden
+* clean up audio nodes
+* prevent memory leaks
+* avoid multiple AudioContexts
+* avoid accumulating event listeners
+
+Target:
+
+Lighthouse Performance ≥ 90
+
+where practical.
+
+---
+
+# 18. DEBUG MODE
+
+Create a hidden developer panel.
+
+Keyboard shortcut:
+
+```text
+Ctrl + Shift + D
+```
+
+Show:
+
+```text
+Current time
+Current profile
+Current song
+Queue
+Recently played
+Music volume
+Ambience volume
+Rain volume
+Reverb wet
+Reverb dry
+Pre-delay
+Decay
+EQ
+Compression
+AudioContext state
+Player state
+Network state
+```
+
+Allow real-time adjustment.
+
+This is essential for tuning the sound.
+
+---
+
+# 19. RESEARCH REPORT BEFORE IMPLEMENTATION
+
+Before writing the final production code, create:
+
+`RESEARCH.md`
+
+containing:
+
+## Confirmed
+
+Facts directly observable from Deluxe Saloon.
+
+## Strongly inferred
+
+Behavior supported by multiple observations.
+
+## Unknown
+
+Things that cannot be established from the public site.
+
+## ROYAL TAILOR implementation
+
+How each observable behavior will be recreated independently.
+
+Include evidence wherever possible.
+
+---
+
+# 20. DO NOT DO THESE THINGS
+
+Never:
+
+* scrape copyrighted music for redistribution
+* download YouTube audio
+* bypass YouTube restrictions
+* copy private APIs
+* bypass DRM
+* copy proprietary source code
+* copy their artwork
+* copy their exact text
+* pretend an inferred algorithm is their actual algorithm
+* claim an exact reverb configuration without evidence
+
+The goal is:
+
+**same category of experience, similar perceptual magic, original implementation.**
+
+---
+
+# 21. FINAL DELIVERABLE
+
+Produce a complete deployable project.
+
+Recommended stack:
+
+* Next.js
+* TypeScript
+* React
+* Tailwind CSS or clean CSS
+* Web Audio API where technically appropriate
+* YouTube IFrame Player API if using YouTube
+* local configuration for playlists/profiles
+* Vercel-compatible deployment
+
+Structure:
+
+```text
+royal-tailor/
+├── app/
+├── components/
+│   ├── ShopScene/
+│   ├── AudioPlayer/
+│   ├── MusicPlayer/
+│   ├── AmbientEngine/
+│   ├── RainEngine/
+│   ├── ChatterEngine/
+│   └── DebugPanel/
+├── audio/
+├── data/
+│   ├── tracks.ts
+│   ├── profiles.ts
+│   └── ambience.ts
+├── lib/
+│   ├── music/
+│   ├── audio/
+│   ├── selection/
+│   └── timing/
+├── public/
+├── RESEARCH.md
+├── AUDIO.md
+├── ARCHITECTURE.md
+└── README.md
+```
+
+---
+
+# 22. MOST IMPORTANT SUCCESS CRITERIA
+
+When I open ROYAL TAILOR, I should NOT think:
+
+“Nice website.”
+
+I should think:
+
+**“BRO, I AM SITTING INSIDE AN OLD INDIAN TAILOR SHOP.”**
+
+The music should feel like it is physically coming from the shop.
+
+The ambience should feel unpredictable but natural.
+
+The song selection should feel curated.
+
+The environment should change throughout the day.
+
+The sound should have depth and room character.
+
+Nothing should feel like a modern Spotify clone.
+
+Build the experience first.
+
+Build the technology second.
+
+And never sacrifice the nostalgic illusion for unnecessary UI.
