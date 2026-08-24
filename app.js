@@ -4,9 +4,17 @@
 //  Single nostalgic Bollywood playlist, dynamic metadata.
 // ============================================================
 
-// ── Playlist ─────────────────────────────────────────────────
-// Deluxe Saloon's own playlist — confirmed embeddable, no Error 150
-const PLAYLIST_ID = 'PLVFLMYM1tErk';
+// ── Playlists Pool ───────────────────────────────────────────
+// Array of curated nostalgia playlists to pick and shuffle from
+const PLAYLISTS = [
+  'PLVFLMYM1tErk',                                     // Deluxe Saloon retro Hindi
+  'PLJABXrnHALkJHG7vK7QMhJ6_Wxl6OPriF',               // User added Playlist 1
+  'PLcVfz1-_0rj8MQEX88RJ3_1qSlCyIFjkt'                // User added Playlist 2
+];
+
+// Pick a random starting playlist from the pool
+let currentPlaylistIdx = Math.floor(Math.random() * PLAYLISTS.length);
+let PLAYLIST_ID = PLAYLISTS[currentPlaylistIdx];
 
 // ── Background images (all from IMG folder) ───────────────────
 const BG_IMAGES = [
@@ -192,6 +200,42 @@ window.onYouTubeIframeAPIReady = function() {
 };
 if (window.YT && window.YT.Player) instantiateYT();
 
+// Switch to another playlist (or random playlist) and play a random track
+function switchPlaylistAndPlay(targetIndex) {
+  if (!ytPlayer) return;
+  if (typeof targetIndex === 'number') {
+    currentPlaylistIdx = targetIndex % PLAYLISTS.length;
+  } else {
+    // Pick a different playlist randomly
+    let newIdx = currentPlaylistIdx;
+    if (PLAYLISTS.length > 1) {
+      while (newIdx === currentPlaylistIdx) {
+        newIdx = Math.floor(Math.random() * PLAYLISTS.length);
+      }
+    }
+    currentPlaylistIdx = newIdx;
+  }
+
+  PLAYLIST_ID = PLAYLISTS[currentPlaylistIdx];
+  const randStart = Math.floor(Math.random() * 20);
+  try {
+    if (typeof ytPlayer.loadPlaylist === 'function') {
+      ytPlayer.loadPlaylist({
+        list: PLAYLIST_ID,
+        listType: 'playlist',
+        index: randStart
+      });
+      // Enable YT shuffle if supported
+      if (typeof ytPlayer.setShuffle === 'function') {
+        ytPlayer.setShuffle(true);
+      }
+      startMetadataPolling();
+    }
+  } catch(e) {
+    console.warn('[RoyalTailor] Playlist switch error:', e);
+  }
+}
+
 // Picks a truly random song from the full playlist on first load
 function startAtRandomIndex(attempt) {
   attempt = attempt || 0;
@@ -202,6 +246,9 @@ function startAtRandomIndex(attempt) {
     if (attempt < 20) setTimeout(() => startAtRandomIndex(attempt + 1), 250);
     return;
   }
+  if (typeof ytPlayer.setShuffle === 'function') {
+    try { ytPlayer.setShuffle(true); } catch(e) {}
+  }
   const idx = Math.floor(Math.random() * total);
   try { ytPlayer.playVideoAt(idx); } catch(e) {}
 }
@@ -209,6 +256,7 @@ function startAtRandomIndex(attempt) {
 function onPlayerReady(event) {
   try { event.target.setVolume(musicVolume); } catch(e) {}
   try { event.target.setLoop(true); }           catch(e) {}
+  try { event.target.setShuffle(true); }        catch(e) {}
   // Silent preload: muted play so metadata loads before user presses Play
   try { event.target.mute(); } catch(e) {}
   startAtRandomIndex(0);
@@ -311,13 +359,44 @@ function togglePlay() {
 }
 
 function nextTrack() {
-  if (!ytPlayer || typeof ytPlayer.nextVideo !== 'function') return;
-  try { ytPlayer.nextVideo(); setTimeout(updateTrackData, 300); } catch(e) {}
+  if (!ytPlayer) return;
+  // 35% chance or at track end / click, hop to another playlist for ultimate freshness
+  if (Math.random() < 0.35 && PLAYLISTS.length > 1) {
+    switchPlaylistAndPlay();
+    return;
+  }
+
+  try {
+    if (typeof ytPlayer.getPlaylist === 'function') {
+      const list = ytPlayer.getPlaylist();
+      if (list && list.length > 1) {
+        const curIdx = typeof ytPlayer.getPlaylistIndex === 'function' ? ytPlayer.getPlaylistIndex() : -1;
+        let randIdx = Math.floor(Math.random() * list.length);
+        if (randIdx === curIdx && list.length > 1) {
+          randIdx = (curIdx + 1) % list.length;
+        }
+        ytPlayer.playVideoAt(randIdx);
+        setTimeout(updateTrackData, 300);
+        return;
+      }
+    }
+    if (typeof ytPlayer.nextVideo === 'function') {
+      ytPlayer.nextVideo();
+      setTimeout(updateTrackData, 300);
+    }
+  } catch(e) {
+    switchPlaylistAndPlay();
+  }
 }
 
 function prevTrack() {
-  if (!ytPlayer || typeof ytPlayer.previousVideo !== 'function') return;
-  try { ytPlayer.previousVideo(); setTimeout(updateTrackData, 300); } catch(e) {}
+  if (!ytPlayer) return;
+  try {
+    if (typeof ytPlayer.previousVideo === 'function') {
+      ytPlayer.previousVideo();
+      setTimeout(updateTrackData, 300);
+    }
+  } catch(e) {}
 }
 
 // ── Play UI ───────────────────────────────────────────────────
